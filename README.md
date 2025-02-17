@@ -11,11 +11,10 @@ PopcornReview is a Django-based movie review platform where users can browse mov
 - Like/Dislike Reviews (Upvote or downvote user reviews)  
 
 ## 🛠 Tech Stack  
-- Backend: Django, Django Rest Framework (if using API)  
+- Backend: Django, Django Rest Framework (for API)  
 - Database: SQLite / PostgreSQL  
 - Frontend: HTML, CSS, Bootstrap/Tailwind, JavaScript  
 - Authentication: Django's built-in auth system  
-- Deployment: Render, Vercel, or Heroku  
 
 ## 🤝 Contribution
 Contributions are welcome! Feel free to submit a pull request or open an issue to suggest improvements.
