@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ movie.title }} - Movie Details</title>
+</head>
+<body>
+    <h1>{{ movie.title }}</h1>
+    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }} poster" width="300" height="450">
+    <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+    <p><strong>Overview:</strong> {{ movie.overview }}</p>
+
+    <h2>Average Rating: {{ avg_rating }}</h2>
+
+    <!-- Review Form -->
+    <h3>Leave a Review:</h3>
+    <form method="post" action="">
+        {% csrf_token %}
+        <label for="rating">Rating (1-5):</label>
+        <input type="number" name="rating" id="rating" min="1" max="5" required><br>
+        
+        <label for="review">Your Review:</label><br>
+        <textarea name="review_text" id="review" rows="4" required></textarea><br>
+        
+        <button type="submit">Submit Review</button>
+    </form>
+
+    <!-- Display Reviews -->
+    <h3>Reviews:</h3>
+    {% if reviews %}
+        {% for review in reviews %}
+            <p><strong>{{ review.user.username }}</strong> (Rated: {{ review.rating }}/5):</p>
+            <p>{{ review.review_text }}</p>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No reviews yet. Be the first to review!</p>
+    {% endif %}
+</body>
+</html>
