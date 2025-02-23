@@ -9,6 +9,8 @@ from django.db.models import Avg
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from .models import MovieReview
+from django.views.decorators.csrf import csrf_exempt
+from .models import MovieReview, ReviewVote
 
 
 TMDB_API_KEY = "5c479c251bf591218affcb56eea2816d"
@@ -69,3 +71,54 @@ def movie_detail(request, movie_id):
     }
 
     return render(request, "movie_detail.html", context)
+
+@csrf_exempt
+@csrf_exempt
+def vote_review(request, review_id, vote_type):
+    if vote_type not in ['like', 'dislike']:
+        return JsonResponse({"error": "Invalid vote type"}, status=400)
+
+    try:
+        review = MovieReview.objects.get(id=review_id)
+        user = request.user
+
+        # Check if the user has already voted
+        existing_vote = ReviewVote.objects.filter(user=user, review=review).first()
+
+        if existing_vote:
+            # If the same vote is repeated, ignore it
+            if existing_vote.vote_type == vote_type:
+                return JsonResponse({"message": "You have already voted", "likes": review.likes, "dislikes": review.dislikes})
+
+            # If the vote type changes, update counts
+            if existing_vote.vote_type == 'like':
+                review.likes -= 1
+            else:
+                review.dislikes -= 1
+
+            # Update to new vote
+            existing_vote.vote_type = vote_type
+            existing_vote.save()
+
+        else:
+            # If no vote exists, create a new one
+            ReviewVote.objects.create(user=user, review=review, vote_type=vote_type)
+
+        # Update the like/dislike count
+        if vote_type == 'like':
+            review.likes += 1
+        else:
+            review.dislikes += 1
+
+        review.save()
+
+        return JsonResponse({"likes": review.likes, "dislikes": review.dislikes})
+
+    except MovieReview.DoesNotExist:
+        return JsonResponse({"error": "Review not found"}, status=404)
+    
+def home_page(request):
+    url = f"https://api.themoviedb.org/3/movie/popular?api_key={TMDB_API_KEY}"
+    response = requests.get(url)
+    movies = response.json().get("results", []) if response.status_code == 200 else []
+    return render(request, "home.html", {"movies": movies})
