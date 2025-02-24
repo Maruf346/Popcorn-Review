@@ -179,3 +179,8 @@ def signup_page(request):
 def logout_user(request):
     logout(request)
     return redirect('login')  # Redirect to the homepage or login page after logout
+
+
+@login_required
+def profile_page(request):
+    return render(request, 'profile.html', {'user': request.user})

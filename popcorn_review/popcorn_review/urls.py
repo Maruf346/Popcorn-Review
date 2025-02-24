@@ -21,6 +21,8 @@ from reviews.views import login_page
 from reviews.views import signup_page
 from reviews.views import logout_user
 from django.contrib.auth import views as auth_views
+from reviews.views import profile_page
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,10 +35,13 @@ urlpatterns = [
     path("login/", login_page, name="login"),
     path("signup/", signup_page, name="signup"),
     path('logout/', logout_user, name='logout'),
+    path('profile/', profile_page, name='profile'),
+    
     
      # Password Reset URLs
     path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    
 ]
