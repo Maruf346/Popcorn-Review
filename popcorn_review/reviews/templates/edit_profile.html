@@ -1,0 +1,175 @@
+{% load static %}
+{% include 'navigation.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | Popcorn-Review</title>
+    
+    <style>
+                /* Base styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Profile container */
+        .profile-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Heading */
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Form styling */
+        .profile-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        /* Inputs */
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        /* Profile Picture Preview */
+        .profile-picture-preview {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .profile-picture-preview img {
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        /* Buttons */
+        button.save-btn {
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button.save-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 15px;
+            }
+
+            .profile-picture-preview img {
+                width: 100px;
+                height: 100px;
+            }
+
+            button.save-btn {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h2>Edit Profile</h2>
+        
+        <!-- User Profile Form -->
+        <form method="POST" enctype="multipart/form-data" class="profile-form">
+            {% csrf_token %}
+            
+            <!-- Display user and profile forms -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                {{ user_form.username }}
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                {{ user_form.email }}
+            </div>
+
+            <div class="form-group">
+                <label for="profile_picture">Profile Picture</label>
+                <div class="profile-picture-preview">
+                    {% if user.userprofile.profile_picture %}
+                        <img id="preview-img" src="{{ user.userprofile.profile_picture.url }}" alt="Profile Picture" />
+                    {% else %}
+                        <img id="preview-img" src="{% static 'images/default-profile.png' %}" alt="Profile Picture" />
+                    {% endif %}
+                </div>                
+                {{ profile_form.profile_picture }}
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                {{ profile_form.bio }}
+            </div>
+
+            <!-- Save Changes Button -->
+            <button type="submit" class="btn save-btn">Save Changes</button>
+        </form>
+    </div>
+
+    <!-- JavaScript for Image Preview -->
+    <script>
+        // Preview Profile Picture before upload
+        const profilePicInput = document.getElementById('id_profile_picture');
+        const previewImg = document.getElementById('preview-img');
+        
+        profilePicInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
