@@ -122,3 +122,6 @@ def home_page(request):
     response = requests.get(url)
     movies = response.json().get("results", []) if response.status_code == 200 else []
     return render(request, "home.html", {"movies": movies})
+
+def about(request):
+    return render(request, 'about.html')  # Render the about page template

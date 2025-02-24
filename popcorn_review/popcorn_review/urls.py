@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from reviews.views import search_movie, search_page, movie_detail, vote_review, home_page
+from reviews.views import search_movie, search_page, movie_detail, vote_review, home_page, about
 
 
 urlpatterns = [
@@ -25,5 +25,6 @@ urlpatterns = [
     path('search/', search_page, name='search_page'),
     path('movie/<int:movie_id>/', movie_detail, name='movie_detail'),  # New route for movie details
     path('api/vote/<int:review_id>/<str:vote_type>/', vote_review, name='vote_review'),
-    path('', home_page, name='home_page'),  # Add this for the homepage
+    path('', home_page, name='home_page'),  # for the homepage
+    path('about/', about, name='about'),  # for the About page
 ]
