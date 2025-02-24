@@ -108,11 +108,13 @@
                         <i class="fa fa-star" data-value="4"></i>
                         <i class="fa fa-star" data-value="5"></i>
                     </div>
+                    <!-- Hidden input field to store rating value -->
+                    <input type="hidden" name="rating" id="rating" required>
                 </div>
                 
                 <div class="mb-3">
                     <label for="review" class="form-label">Your Review:</label>
-                    <textarea name="review_text" id="review" rows="4" required class="review-textarea"></textarea>
+                    <textarea name="review_text" id="review" rows="4" required class="review-textarea" required placeholder="Write your review..."></textarea>
                 </div>
                 <button type="submit" class="review-btn">Submit Review</button>
             </form>
@@ -167,26 +169,31 @@
 
     <!-- JavaScript for Rating -->
     <script>
-        const stars = document.querySelectorAll('#star-rating i');
+        document.addEventListener("DOMContentLoaded", function () {
+            const stars = document.querySelectorAll("#star-rating i");
+            const ratingInput = document.getElementById("rating");
     
-        stars.forEach(star => {
-            star.addEventListener('click', () => {
-                let selectedValue = star.getAttribute('data-value');
+            stars.forEach(star => {
+                star.addEventListener("click", function () {
+                    let selectedValue = this.getAttribute("data-value");
     
-                // Remove 'selected' class from all stars
-                stars.forEach(s => s.classList.remove('selected'));
+                    // Remove 'selected' class from all stars
+                    stars.forEach(s => s.classList.remove("selected"));
     
-                // Add 'selected' class to all stars up to the clicked one
-                stars.forEach(s => {
-                    if (s.getAttribute('data-value') <= selectedValue) {
-                        s.classList.add('selected');
-                    }
+                    // Add 'selected' class to all stars up to the clicked one
+                    stars.forEach(s => {
+                        if (s.getAttribute("data-value") <= selectedValue) {
+                            s.classList.add("selected");
+                        }
+                    });
+    
+                    // Set hidden input value
+                    ratingInput.value = selectedValue;
                 });
-
-                document.getElementById('rating').value = selectedValue;
             });
         });
     </script>
+    
     
     
 </body>

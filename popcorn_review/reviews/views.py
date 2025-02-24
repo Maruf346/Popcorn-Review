@@ -11,6 +11,11 @@ from django.contrib.auth.decorators import login_required
 from .models import MovieReview
 from django.views.decorators.csrf import csrf_exempt
 from .models import MovieReview, ReviewVote
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import logout
 
 
 TMDB_API_KEY = "5c479c251bf591218affcb56eea2816d"
@@ -125,3 +130,52 @@ def home_page(request):
 
 def about(request):
     return render(request, 'about.html')  # Render the about page template
+
+
+def login_page(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect("home_page")  # Redirect to the homepage
+        else:
+            messages.error(request, "Invalid username or password")
+
+    return render(request, "login.html")
+
+
+def signup_page(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        password2 = request.POST["password2"]
+
+        # Check if passwords match
+        if password != password2:
+            messages.error(request, "Passwords do not match.")
+            return render(request, "signup.html")
+
+        # Check if username is taken
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username is already taken.")
+            return render(request, "signup.html")
+
+        # Check if email is already registered
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email is already registered.")
+            return render(request, "signup.html")
+
+        # Create and login the user
+        user = User.objects.create_user(username=username, email=email, password=password)
+        login(request, user)
+        return redirect("home_page")  # Redirect to homepage
+
+    return render(request, "signup.html")
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')  # Redirect to the homepage or login page after logout
